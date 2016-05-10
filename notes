@@ -1,0 +1,7 @@
+import files and match:
+  on precinct id
+  on address if no match
+
+  reconcile # of records
+
+use existing logic that brings in csvs to create tables for the files
