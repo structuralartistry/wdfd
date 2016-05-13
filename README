@@ -1,0 +1,42 @@
+Write an explanation–as though you’re instructing an appropriately technically skilled colleague–of how to go about merging two tables of the same format, but with a address file of several hundred thousand rows. Your answer can be text only, include code samples, or take whatever form makes sense to you. We’ll probably draw the line at explanations by modern dance or cave painting, but if you think you can be clear enough, go ahead and take a swing. We're all for creativity.
+
+
+Hi, here are some instructions and comments on how to create output files (addresses with polling locations, VIP files - polling location, precinct and precinct polling location).
+
+There are two ways to do this, the easy way and the hard way.
+
+Easy way: 
+  1) Install ruby on your machine (use a Linux VM or Mac, bets are off on Windows).
+  2) In the project directory (where this file is), replace the addresses.csv and the precinct_polling_list.csv with the 
+     files you want to use.
+  3) Run `ruby wdfd_test.rb` from the console (note you may have to install required gems if you get error messages(.
+  4) As you run the above, the app might spit out errors on any data which is malformed, i.e. items in the csv import
+     files which are missing commas, for example. Should be self explanatory from the output you see in the console.
+  5) Verify the output files (addresses_with_polling_locations.csv, polling_location.txt, precinct.txt and 
+     precinct_polling_location.txt) - you should expect to have the same number of lines for the VIP files as you have
+     in the original precinct_polling_list.csv file.
+
+Hard way - redo things from scratch:
+  Note: all the logic for what is described below is in wdfd.rb
+
+  1) Make sure in addresses.csv that all rows have the expected fields in the expected places. If not programmatically,
+     then opening such in Excel or the like should quickly show you any rows that are malformed. Correct any malformed
+     rows (in most cases they are situations where commas are missing between fields). 
+
+     State and zipcode fields in all cases are combined so you will have to split those into two separate fields.
+
+  2) Precincts (in theory - although the files I was provided do not show this), has a one to many relationship to 
+     polling locations. So a precinct can have many polling locations. So you want to create a unique id for each
+     precinct (i.e. an incrementing integer) and then relate the polling locations for a given precinct. The precinct
+     unique id is the last three digits of the Precinct field in the input file. So in theory you could have many rows
+     of the same precinct unique identifier in the file but each row needs to have its own unique id as polling location.
+  3) You want to create an output file which gives a polling location for each address in addresses.csv. So to do this,
+     for each address in that file you need to lookup in your precinct polling list by a combination key of state id and 
+     precinct identifier (as described above) to the address in question. Also, you will need to have a failover if 
+     that match does not work: So if the initial match fails, then match on zip code. If that fails, then match on 
+     state (I took liberty in this decision, we will need to check and maybe would want to kick out any data which 
+     fails at the second try).
+  4) Create VIP files per their specifications. You now have all the data to handle this but depending how you implemented
+     the above will determine how hard or easy this is for you. Note the unique to system id requirement for all ids from 
+     the github docs.
+

@@ -180,7 +180,7 @@ class Wdfd
       csv << [ 'name','number','locality_id','ward','mail_only','ballot_style_image_url','id' ]
       result.each do |row|
         data = [ row[:name], row[:number], row[:locality_id], row[:ward], row[:mail_only],
-                row[:ballot_style_image_url], row[:id] ]
+                row[:ballot_style_image_url], '100' + row[:id].to_s ]
         csv << data
       end
     end
@@ -194,7 +194,7 @@ class Wdfd
     CSV.open("polling_location.txt", "wb") do |csv|
       csv << [ 'address_location_name','address_line1','address_line2','address_line3','address_city','address_state','address_zip','directions','polling_hours','photo_url','id']
       result.each do |row|
-        data = [ row[''], row[:address_line1], row[''], row[''], row[:address_city], row[:address_state], row[:address_zip], row[''], row[''], row[''], row[:id] ]
+        data = [ row[''], row[:address_line1], row[''], row[''], row[:address_city], row[:address_state], row[:address_zip], row[''], row[''], row[''], '200' + row[:id].to_s ]
         csv << data
       end
     end
@@ -208,7 +208,7 @@ class Wdfd
     CSV.open("precinct_polling_location.txt", "wb") do |csv|
       csv << ['precinct_id','polling_location_id']
       result.each do |row|
-        data = [ row[:precinct_id], row[:polling_location_id] ]
+        data = [ '100' + row[:precinct_id].to_s, '200' + row[:polling_location_id].to_s ]
         csv << data
       end
     end
